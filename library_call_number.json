@@ -1,0 +1,19 @@
+{
+    "displayName": "Library - Call Number",
+    "description": "Retrieves call number items.",
+    "instructions": "Input the call number range to run the report.",
+    "parameters": [
+        {
+            "name": "start_date",
+            "displayName": "Start Call Number",
+            "type": "text",
+            "required": true
+        },
+        {
+            "name": "end_date",
+            "displayName": "End Call Number",
+            "type": "text",
+            "required": true
+        }
+    ]
+}
