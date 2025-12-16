@@ -3,8 +3,8 @@
 DROP FUNCTION IF EXISTS library_call_number;
 
 CREATE FUNCTION library_call_number(
-    start_call_number 'text' DEFAULT J,
-    end_call_number 'text' DEFAULT JZ9999.9999
+    start_call_number text DEFAULT 'J',
+    end_call_number text DEFAULT 'JZ9999.9999'
     )
 RETURNS TABLE(
     title text,
