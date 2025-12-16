@@ -135,7 +135,7 @@ join
 join
 		publicationdate on publicationdate.id = folio_inventory.instance.id
 where
-		folio_inventory.holdings_record__t.call_number between 'start_call_number' and 'end_call_number'
+		folio_inventory.holdings_record__t.call_number between start_call_number and end_call_number
 order by call_number
 ;
 $$
