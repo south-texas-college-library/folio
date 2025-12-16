@@ -4,13 +4,13 @@
     "instructions": "Input the call number range to run the report.",
     "parameters": [
         {
-            "name": "start_date",
+            "name": "start_call_number",
             "displayName": "Start Call Number",
             "type": "text",
             "required": true
         },
         {
-            "name": "end_date",
+            "name": "end_call_number",
             "displayName": "End Call Number",
             "type": "text",
             "required": true
