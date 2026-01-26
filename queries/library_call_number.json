@@ -1,17 +1,17 @@
 {
     "displayName": "Library - Call Number",
     "description": "Retrieves call number items.",
-    "instructions": "Input the call number range to run the report. Input example: Start Call Number  J   End Call Number  JJ9999.9999",
+    "instructions": "Input the call number range to run the report.",
     "parameters": [
         {
             "name": "start_call_number",
-            "displayName": "Start Call Number",
+            "displayName": "Start Call Number (J)",
             "type": "text",
             "required": true
         },
         {
             "name": "end_call_number",
-            "displayName": "End Call Number",
+            "displayName": "End Call Number (JJ9999.9999)",
             "type": "text",
             "required": true
         }
