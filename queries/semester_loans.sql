@@ -12,12 +12,12 @@ RETURNS TABLE(
     "C - Item Barcode" TEXT,
     "D - Status" TEXT,
     "E - Check Out Library" TEXT,
-    "F - Due Date" TEXT
+    "F - Due Date" TEXT,
     "G - User Barcode" TEXT,
     "H - Name" TEXT,
     "I - Phone Number" TEXT,
 	"J - Email" TEXT,
-    "K - Staff Notes" TEXT,
+    "K - Staff Notes" TEXT
 )
 AS $$
     WITH loans AS (
