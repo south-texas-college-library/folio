@@ -61,13 +61,13 @@ AS $$
     WHERE
         (item_library = 'All' OR ll.name = item_library)       
         AND CASE
-            WHEN asset_type = 'All' 
+            WHEN subtype = 'All' 
                 THEN (insc.name = 'Calculator' AND m.name = 'SEM-ITEM') 
                 OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
-            WHEN asset_type = 'Calculator' 
-                THEN insc.name = asset_type AND m.name = 'SEM-ITEM'
+            WHEN subtype = 'Calculator' 
+                THEN insc.name = subtype AND m.name = 'SEM-ITEM'
             ELSE 
-                insc.name = asset_type AND m.name = 'SEMEXTEND-ITEM'
+                insc.name = subtype AND m.name = 'SEMEXTEND-ITEM'
         END
     ORDER BY
         jsonb_extract_path_text(it.jsonb, 'barcode')
