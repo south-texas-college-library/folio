@@ -44,12 +44,12 @@ AS $$
         jsonb_extract_path_text(it.jsonb, 'barcode') AS "Item Barcode",
         jsonb_extract_path_text(it.jsonb, 'status', 'name') AS "Status",
         loans.checkout_campus AS "Check Out Library",
-        loans.due_date::DATE::TEXT AS "Due Date"
+        loans.due_date::DATE::TEXT AS "Due Date",
         loans.user_barcode AS "User Barcode",
         loans.full_name AS "Name",
         loans.phone AS "Phone Number",
         loans.email AS "Email",
-        NULLIF(REGEXP_REPLACE(jsonb_path_query_array(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[\[\]"]', '', 'g'), '') AS "Staff Notes",
+        NULLIF(REGEXP_REPLACE(jsonb_path_query_array(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[\[\]"]', '', 'g'), '') AS "Staff Notes"
     FROM folio_inventory.instance ins
     JOIN folio_inventory.holdings_record hr ON hr.instanceid = ins.id
     JOIN folio_inventory.item it ON it.holdingsrecordid = hr.id
