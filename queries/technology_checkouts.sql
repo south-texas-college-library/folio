@@ -1,23 +1,29 @@
---metadb:function semester_loans
+--metadb:function technology_checkouts
 
-DROP FUNCTION IF EXISTS semester_loans;
+DROP FUNCTION IF EXISTS technology_checkouts;
 
-CREATE FUNCTION semester_loans(
+CREATE FUNCTION technology_checkouts(
+    title TEXT DEFAULT NULL,
+    call_number TEXT DEFAULT NULL,
     subtype TEXT DEFAULT NULL,
-    item_library TEXT DEFAULT NULL
+    item_library TEXT DEFAULT NULL,
+    po_number TEXT DEFAULT NULL
 )
 RETURNS TABLE(
     "A - Subtype" TEXT,
-    "B - Item Library" TEXT,
-    "C - Item Barcode" TEXT,
-    "D - Status" TEXT,
-    "E - Check Out Library" TEXT,
-    "F - Due Date" TEXT,
-    "G - User Barcode" TEXT,
-    "H - Name" TEXT,
-    "I - Phone Number" TEXT,
-	"J - Email" TEXT,
-    "K - Staff Notes" TEXT
+    "B - Title" TEXT,
+    "C - Call Number" TEXT,
+    "D - Item Library" TEXT,
+    "E - Item Barcode" TEXT,
+    "F - Status" TEXT,
+    "G - Check Out Library" TEXT,
+    "H - Due Date" TEXT,
+    "I - User Barcode" TEXT,
+    "J - Name" TEXT,
+    "K - Phone Number" TEXT,
+	"L - Email" TEXT,
+    "M - PO Number" TEXT,
+    "N - Staff Notes" TEXT
 )
 AS $$
     WITH loans AS MATERIALIZED (
@@ -40,6 +46,8 @@ AS $$
     )
     SELECT
         insc.name AS "Subtype",
+        jsonb_extract_path_text(ins.jsonb, 'title') AS "Title",
+        jsonb_extract_path_text(ins.jsonb, 'callNumber') AS "Call Number",
         ll.name AS "Item Library",
         jsonb_extract_path_text(it.jsonb, 'barcode') AS "Item Barcode",
         jsonb_extract_path_text(it.jsonb, 'status', 'name') AS "Status",
@@ -49,7 +57,8 @@ AS $$
         loans.full_name AS "Name",
         loans.phone AS "Phone Number",
         loans.email AS "Email",
-        NULLIF(REGEXP_REPLACE(jsonb_path_query_array(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[\[\]"]', '', 'g'), '') AS "Staff Notes"
+        jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' as "PO #",
+        TRANSLATE(jsonb_path_query_array(ins.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[]"', '') as "Staff Notes"
     FROM folio_inventory.instance ins
     JOIN folio_inventory.holdings_record hr ON hr.instanceid = ins.id
     JOIN folio_inventory.item it ON it.holdingsrecordid = hr.id
@@ -61,16 +70,18 @@ AS $$
     WHERE
         (item_library = 'All' OR ll.name = item_library)       
         AND CASE
-            WHEN subtype = 'Calculator' 
-                THEN insc.name = 'Calculator' AND m.name = 'SEM-ITEM'
-            WHEN subtype = 'Hotspot' 
-                THEN insc.name = 'Hotspot' AND m.name = 'SEMEXTEND-ITEM' AND hl.name != 'Storage'
-            WHEN subtype = 'Laptop' 
-                THEN insc.name = 'Laptop' AND m.name = 'SEMEXTEND-ITEM'
-            ELSE
-                (insc.name = 'Calculator' AND m.name = 'SEM-ITEM') 
-                OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
-        END
+                WHEN subtype = 'Calculator'
+                    THEN insc.name = 'Calculator' AND m.name = 'SEM-ITEM'
+                WHEN subtype = 'Hotspot'
+                    THEN insc.name = 'Hotspot' AND m.name = 'SEMEXTEND-ITEM' AND hl.name != 'Storage'
+                WHEN subtype = 'Laptop'
+                    THEN insc.name = 'Laptop' AND m.name = 'SEMEXTEND-ITEM' AND jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' = po_number
+                ELSE
+                    (insc.name = 'Calculator' AND m.name = 'SEM-ITEM') 
+                    OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
+            END
+        AND jsonb_extract_path_text(ins.jsonb, 'title') = title
+        AND jsonb_extract_path_text(ins.jsonb, 'callNumber') = call_number
     ORDER BY
         jsonb_extract_path_text(it.jsonb, 'barcode')
 $$
