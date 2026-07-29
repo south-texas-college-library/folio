@@ -75,13 +75,14 @@ AS $$
                 WHEN subtype = 'Hotspot'
                     THEN insc.name = 'Hotspot' AND m.name = 'SEMEXTEND-ITEM' AND hl.name != 'Storage'
                 WHEN subtype = 'Laptop'
-                    THEN insc.name = 'Laptop' AND m.name = 'SEMEXTEND-ITEM' AND (po_number IS NULL OR jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' = po_number)
+                    THEN insc.name = 'Laptop' AND m.name = 'SEMEXTEND-ITEM' 
                 ELSE
                     (insc.name = 'Calculator' AND m.name = 'SEM-ITEM') 
                     OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
             END
         AND (title IS NULL OR jsonb_extract_path_text(ins.jsonb, 'title') = title)
         AND (call_number IS NULL OR jsonb_extract_path_text(hr.jsonb, 'callNumber') = call_number)
+        AND (po_number IS NULL OR jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' = po_number)
     ORDER BY
         jsonb_extract_path_text(it.jsonb, 'barcode')
 $$
