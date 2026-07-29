@@ -47,7 +47,7 @@ AS $$
     SELECT
         insc.name AS "Subtype",
         jsonb_extract_path_text(ins.jsonb, 'title') AS "Title",
-        jsonb_extract_path_text(ins.jsonb, 'callNumber') AS "Call Number",
+        jsonb_extract_path_text(hr.jsonb, 'callNumber') AS "Call Number",
         ll.name AS "Item Library",
         jsonb_extract_path_text(it.jsonb, 'barcode') AS "Item Barcode",
         jsonb_extract_path_text(it.jsonb, 'status', 'name') AS "Status",
@@ -81,7 +81,7 @@ AS $$
                     OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
             END
         AND (title IS NULL OR jsonb_extract_path_text(ins.jsonb, 'title') = title)
-        AND (call_number IS NULL OR jsonb_extract_path_text(ins.jsonb, 'callNumber') = call_number)
+        AND (call_number IS NULL OR jsonb_extract_path_text(hr.jsonb, 'callNumber') = call_number)
     ORDER BY
         jsonb_extract_path_text(it.jsonb, 'barcode')
 $$
