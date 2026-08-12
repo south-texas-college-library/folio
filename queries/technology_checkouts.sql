@@ -8,20 +8,20 @@ CREATE FUNCTION technology_checkouts(
     po_number TEXT DEFAULT NULL
 )
 RETURNS TABLE(
-    "A - Subtype" TEXT,
-    "B - Title" TEXT,
-    "C - Call Number" TEXT,
-    "D - Item Library" TEXT,
-    "E - Item Barcode" TEXT,
-    "F - Status" TEXT,
-    "G - Check Out Library" TEXT,
-    "H - Due Date" TEXT,
-    "I - User Barcode" TEXT,
-    "J - Name" TEXT,
-    "K - Phone Number" TEXT,
-	"L - Email" TEXT,
-    "M - PO Number" TEXT,
-    "N - Staff Notes" TEXT
+    "Subtype" TEXT,
+    "Title" TEXT,
+    "Call Number" TEXT,
+    "Item Library" TEXT,
+    "Barcode" TEXT,
+    "Status" TEXT,
+    "Check Out Library" TEXT,
+    "Due Date" TEXT,
+    "User #" TEXT,
+    "Name" TEXT,
+    "Phone" TEXT,
+	"Email" TEXT,
+    "PO Number" TEXT,
+    "Staff Notes" TEXT
 )
 AS $$
     WITH loans AS MATERIALIZED (
