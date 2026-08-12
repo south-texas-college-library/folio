@@ -56,7 +56,7 @@ AS $$
         loans.phone AS "Phone",
         loans.email AS "Email",
         jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' as "PO #",
-        TRANSLATE(jsonb_path_query_array(ins.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[]"', '') as "Staff Notes"
+        TRANSLATE(jsonb_path_query_array(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[]"', '') as "Staff Notes"
     FROM folio_inventory.instance ins
     JOIN folio_inventory.holdings_record hr ON hr.instanceid = ins.id
     JOIN folio_inventory.item it ON it.holdingsrecordid = hr.id
