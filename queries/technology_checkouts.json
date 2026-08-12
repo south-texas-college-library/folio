@@ -4,18 +4,6 @@
   "instructions": "Input a title, call number, subtype, item library, and PO number to run the report.",
   "parameters": [
     {
-      "name": "title",
-      "displayName": "Title",
-      "type": "text",
-      "required": false
-    },
-    {
-      "name": "call_number",
-      "displayName": "Call Number",
-      "type": "text",
-      "required": false
-    },
-    {
       "name": "subtype",
       "displayName": "Subtype",
       "type": "text",

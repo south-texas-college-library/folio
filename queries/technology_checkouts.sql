@@ -3,8 +3,6 @@
 DROP FUNCTION IF EXISTS technology_checkouts;
 
 CREATE FUNCTION technology_checkouts(
-    title TEXT DEFAULT NULL,
-    call_number TEXT DEFAULT NULL,
     subtype TEXT DEFAULT NULL,
     item_library TEXT DEFAULT NULL,
     po_number TEXT DEFAULT NULL
@@ -49,13 +47,13 @@ AS $$
         jsonb_extract_path_text(ins.jsonb, 'title') AS "Title",
         jsonb_extract_path_text(hr.jsonb, 'callNumber') AS "Call Number",
         ll.name AS "Item Library",
-        jsonb_extract_path_text(it.jsonb, 'barcode') AS "Item Barcode",
+        jsonb_extract_path_text(it.jsonb, 'barcode') AS "Barcode",
         jsonb_extract_path_text(it.jsonb, 'status', 'name') AS "Status",
         loans.checkout_campus AS "Check Out Library",
         loans.due_date::DATE::TEXT AS "Due Date",
-        loans.user_barcode AS "User Barcode",
+        loans.user_barcode AS "User #",
         loans.full_name AS "Name",
-        loans.phone AS "Phone Number",
+        loans.phone AS "Phone",
         loans.email AS "Email",
         jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' as "PO #",
         TRANSLATE(jsonb_path_query_array(ins.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "86e6410d-4c8b-4853-8054-bd5e563e9760").note') #>> '{}', '[]"', '') as "Staff Notes"
@@ -80,9 +78,7 @@ AS $$
                     (insc.name = 'Calculator' AND m.name = 'SEM-ITEM') 
                     OR (insc.name IN ('Laptop', 'Hotspot') AND m.name = 'SEMEXTEND-ITEM')
             END
-        AND (title IS NULL OR jsonb_extract_path_text(ins.jsonb, 'title') = title)
-        AND (call_number IS NULL OR jsonb_extract_path_text(hr.jsonb, 'callNumber') = call_number)
-        AND (po_number IS NULL OR jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' = po_number)
+        AND (po_number IS NULL OR jsonb_path_query_first(it.jsonb, '$.notes[*] ? (@.itemNoteTypeId == "5ec4ca65-aacc-4f16-aa9d-395efd89f850").note') #>> '{}' ilike ('%' || po_number || '%'))
     ORDER BY
         jsonb_extract_path_text(it.jsonb, 'barcode')
 $$
